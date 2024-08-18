@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
-import Link from "next/Link";
+import Link from "next/link";
 export default function CartDialog() {
   const { cart, removeFromCart } = useCart();
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);

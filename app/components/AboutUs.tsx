@@ -1,4 +1,4 @@
-import Image from "next/Image";
+import Image from "next/image";
 export default function AboutUs() {
   return (
     <div id="aboutus" className="bg-gray-50 py-16">
