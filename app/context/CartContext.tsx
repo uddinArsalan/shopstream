@@ -10,6 +10,8 @@ const CartContext = createContext<CartContextType>({
   clearCart: () => {},
   removeFromCart: console.log,
   updateQuantity: () => {},
+  isCartDialogOpen : false,
+  toggleCartOpen : () => {}
 });
 
 export function useCart() {
@@ -18,6 +20,7 @@ export function useCart() {
 
 function CartContextProvider({children} : {children : React.ReactNode}) {
   const [cart, setCart] = useState<CartItemType[]>([]);
+  const [isCartDialogOpen, setCartDialogOpen] = useState<boolean>(false);
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
@@ -53,6 +56,10 @@ function CartContextProvider({children} : {children : React.ReactNode}) {
     setCart([]);
   };
 
+  function toggleCartOpen () {
+    setCartDialogOpen(!isCartDialogOpen);
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -61,6 +68,8 @@ function CartContextProvider({children} : {children : React.ReactNode}) {
         updateQuantity,
         removeFromCart,
         clearCart,
+        isCartDialogOpen,
+        toggleCartOpen
       }}
     >
       {children}

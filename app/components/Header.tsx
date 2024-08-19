@@ -13,7 +13,7 @@ import { useCart } from "../context/CartContext";
 import { useApp } from "../context/AppProvider";
 
 function Header() {
-  const { cart } = useCart();
+  const { cart,toggleCartOpen } = useCart();
   const cartCount = cart.length;
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -27,14 +27,13 @@ function Header() {
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href="/">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 ">
               <Image alt="logo" src="/logo.png" width={40} height={42} />
               <span className="text-xl font-bold">SHOPSTREAM</span>
             </div>
           </Link>
 
-          <div className="hidden md:flex items-center space-x-6">
-            <ul className="flex space-x-6 text-sm font-medium">
+          <div className="hidden md:flex items-center space-x-6"> <ul className="flex space-x-6 text-sm font-medium">
               <li>
                 <Link href="/" className="hover:text-gray-600">
                   HOME
@@ -55,7 +54,10 @@ function Header() {
                   CONTACT US
                 </Link>
               </li>
-            </ul>
+            </ul></div>
+
+          <div className="hidden md:flex items-center space-x-6">
+           
 
             <div className="relative">
               <button
@@ -100,14 +102,14 @@ function Header() {
               )}
             </div>
 
-            <Link href="/cart">
-              <button className="p-2 hover:bg-gray-100 rounded-full relative">
+            {/* <Link href="/cart"> */}
+              <button className="p-2 hover:bg-gray-100 rounded-full relative" onClick={toggleCartOpen}>
                 <ShoppingBagIcon className="w-6 h-6" />
                 <div className="absolute left-1/2 -top-1/3 w-6 h-6 border text-xs flex justify-center items-center bg-white text-gray-900 rounded-full">
                   {cartCount}
                 </div>
               </button>
-            </Link>
+            {/* </Link> */}
           </div>
 
           <button
@@ -153,7 +155,7 @@ function Header() {
             </ul>
             <div className="mt-4 flex justify-between items-center">
               <div className="flex items-center space-x-2">
-                <Avatar />
+              {isLoggedIn ? <Avatar /> : <UserIcon className="w-6 h-6 "/>}
                 <span className="text-sm font-medium">
                   {isLoggedIn ? userProfile?.name : "Guest"}
                 </span>
@@ -173,18 +175,18 @@ function Header() {
                 </div>
               )}
             </div>
-            <Link
-              href="/cart"
+            <div
               className="mt-4 flex items-center justify-between"
+              
             >
               <span className="text-sm font-medium">Cart</span>
-              <div className="p-2 hover:bg-gray-100 rounded-full relative">
+              <div className="p-2 hover:bg-gray-100 rounded-full relative" onClick={toggleCartOpen}>
                 <ShoppingBagIcon className="w-6 h-6" />
                 <div className="absolute left-1/2 -top-1/3 w-6 h-6 border text-xs flex justify-center items-center bg-white text-gray-900 rounded-full">
                   {cartCount}
                 </div>
               </div>
-            </Link>
+            </div>
           </div>
         )}
       </nav>

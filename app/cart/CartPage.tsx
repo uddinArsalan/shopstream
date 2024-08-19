@@ -7,6 +7,7 @@ import { Coupon, CouponCode } from "../types/card";
 import { useRouter } from "next/navigation";
 import { useCartLogic } from "../lib/hooks/useCartLogic";
 import EmptyCartMessage from "./EmptyCartMessage";
+import { useApp } from "../context/AppProvider";
 
 const PUBLIC_STRIPE_PUBLISHABLE_KEY =
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
@@ -15,6 +16,7 @@ const stripePromise = loadStripe(PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 function CartPage() {
   const { cart, updateQuantity, removeFromCart } = useCart();
+  const {startLoader,completeLoader} = useApp();
   const availableCoupons: Coupon[] = [
     { code: "FLAT20", type: "percentage", value: 20 },
     { code: "BIGSPEND50", type: "amount", value: 50 },
@@ -34,6 +36,7 @@ function CartPage() {
   const router = useRouter();
 
   const proceedToCheckout = async () => {
+    const loaderId = startLoader();
     try {
       const response = await fetch("/api/createCheckout", {
         method: "POST",
@@ -55,6 +58,8 @@ function CartPage() {
       setErrorMessage(
         error instanceof Error ? error.message : "An unexpected error occurred"
       );
+    }finally{
+      completeLoader(loaderId)
     }
   };
 

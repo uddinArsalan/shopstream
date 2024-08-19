@@ -6,8 +6,7 @@ import {
 } from "@/app/lib/utils/definitions";
 import { createUser, findUserByEmail, generateUserTokens } from "@/app/lib/db";
 import { cookies } from "next/headers";
-import { connectDB } from "@/app/lib/db";
-// import { redirect } from "next/navigation";
+import connectDB from "@/app/lib/db/connectDB";
 
 const ACCESS_TOKEN_EXPIRY = 60 * 60 * 24;
 // const REFRESH_TOKEN_EXPIRY = 60 * 60 * 24 * 7;

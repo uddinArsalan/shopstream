@@ -3,6 +3,7 @@ import { useCart } from "../context/CartContext";
 import { XMarkIcon, StarIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { Product } from "../types/product";
+import {useState} from "react"
 
 interface ProductInfoModalType {
   product: Product;
@@ -14,9 +15,16 @@ export default function ProductInfoModal({
   onClose,
 }: ProductInfoModalType) {
   const { addToCart } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
   if (!product) {
     return <div>Product not found</div>;
   }
+
+  const handleAddToCart = () => {
+    setIsAdding(true);
+    addToCart(product);
+    setTimeout(() => setIsAdding(false), 1000);
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1000] p-4">
@@ -82,10 +90,13 @@ export default function ProductInfoModal({
             </div>
 
             <button
-              onClick={() => addToCart(product)}
-              className="w-full px-6 py-2 lg:py-3 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 transition duration-300 font-semibold mt-auto"
+              onClick={handleAddToCart}
+              className={`w-full px-6 py-2 lg:py-3 bg-gray-900 text-white text-sm rounded-lg  transition-all duration-300 ease-in-out font-semibold mt-auto ${
+                isAdding ? "opacity-75 scale-95" : "hover:bg-gray-800"
+              }`}
+              disabled={isAdding}
             >
-              Add to Cart
+              {isAdding ? "Added!" : "Add to Cart"}
             </button>
           </div>
         </div>
