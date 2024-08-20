@@ -9,13 +9,13 @@ export default function SignupForm() {
   const [state, action] = useFormState(signup, undefined)
   const { pending } = useFormStatus();
 
-  const router = useRouter();
+  // const router = useRouter();
 
-  useEffect(() => {
-    if (!pending && state && !state.errors && !state.message) {
-      router.push("/");
-    }
-  }, [pending, state, router])
+  // useEffect(() => {
+  //   if (!pending && state && !state.errors && !state.message) {
+  //     router.push("/");
+  //   }
+  // }, [pending, state, router])
 
   return (
     <main className='min-h-screen bg-gray-100 flex flex-col items-center justify-center p-24'>

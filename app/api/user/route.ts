@@ -1,7 +1,7 @@
-import { findUserById } from "@/app/lib/db";
 import connectDB from "@/app/lib/db/connectDB";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { User } from "@/app/models/User";
 
 export async function GET() {
   try {
@@ -14,7 +14,7 @@ export async function GET() {
       );
     }
     await connectDB()
-    const user = await findUserById(userId);
+    const user = await User.findById(userId, "name email");;
     console.log(user)
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });

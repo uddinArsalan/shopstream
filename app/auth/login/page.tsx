@@ -8,13 +8,13 @@ import { useEffect } from "react";
 export default function LoginForm() {
   const [state, action] = useFormState(login, undefined);
   const { pending } = useFormStatus();
-  const router = useRouter()
+  // const router = useRouter()
 
-  useEffect(() => {
-    if(!pending && state && !state.errors && !state.message){
-      router.push("/");
-    }
-  },[pending,router,state])
+  // useEffect(() => {
+  //   if(!pending && state && !state.errors && !state.message){
+  //     router.push("/");
+  //   }
+  // },[pending,router,state])
 
   return (
     <main className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-24">

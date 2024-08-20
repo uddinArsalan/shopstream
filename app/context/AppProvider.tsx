@@ -52,31 +52,30 @@ function AppProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     async function getUser() {
-      const loaderId = startNewLoadingProcess();
-      try {
-        const response = await fetch("/api/user");
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
+      if (!userProfile) {
+        const loaderId = startNewLoadingProcess();
+        try {
+          const response = await fetch('/api/user');
+          if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+          }
+          const { user } = await response.json();
+          setUserProfile(user);
+        } catch (error) {
+          console.error('Error fetching user:', error);
+          setUserProfile(null);
+        } finally {
+          markLoadingCompleted(loaderId);
         }
-        const { user } = await response.json();
-        setUserProfile(user);
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        setUserProfile(null);
-      } finally {
-        markLoadingCompleted(loaderId);
       }
     }
-
+  
     getUser();
   }, []);
 
-   function logoutUser() {
-     logout();
+   async function logoutUser() {
     setUserProfile(null);
-    if (!(path === "/")) {
-      router.push("/");
-    }
+    await logout();
   }
 
   return (
