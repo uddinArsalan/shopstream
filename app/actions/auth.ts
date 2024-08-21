@@ -7,8 +7,7 @@ import {
 import { cookies } from "next/headers";
 import connectDB from "@/app/lib/db/connectDB";
 import { redirect ,permanentRedirect} from "next/navigation";
-import { User } from "../models/User";
-import { Types } from "mongoose";
+import { createUser,findUserByEmail,generateUserTokens } from "../lib/db";
 
 const ACCESS_TOKEN_EXPIRY = 60 * 60 * 24;
 
@@ -20,34 +19,6 @@ function setTokenCookies(accessToken: string) {
     sameSite: "lax",
     path: "/",
   });
-}
-
-export async function createUser(
-  name: string,
-  email: string,
-  password: string
-) {
-  return User.create({ name, email, password });
-}
-
-export async function findUserByEmail(email: string) {
-  return User.findOne({ email });
-}
-
-export async function findUserById(userId: string) {
-  return User.findById(userId, "name email");
-}
-
-export async function generateUserTokens(userId: Types.ObjectId) {
-  const user = await User.findById(userId);
-  if (!user) throw new Error("User not found");
-
-  const accessToken = await user.generateAccessToken();
-  // const refreshToken = await user.generateRefreshToken();
-  // user.refreshToken = refreshToken;
-  // await user.save({ validateBeforeSave: false });
-  // return { accessToken, refreshToken };
-  return accessToken;
 }
 
 export async function signup(state: FormState, formData: FormData) {

@@ -71,7 +71,7 @@ function AppProvider({ children }: { children: React.ReactNode }) {
     }
   
     getUser();
-  }, []);
+  }, [userProfile]);
 
    async function logoutUser() {
     setUserProfile(null);
