@@ -1,8 +1,7 @@
 import connectDB from "@/app/lib/db/connectDB";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { User } from "@/app/models/User";
-import { findUserById } from "@/app/lib/db";
+import { findUserById } from "@/app/actions/auth";
 
 export async function GET() {
   try {
