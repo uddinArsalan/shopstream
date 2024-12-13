@@ -1,26 +1,31 @@
+import mongoose from "mongoose";
 const DB_NAME = "shopstream";
 const { MONGODB_URI } = process.env;
-import mongoose from "mongoose";
+ 
+const cached: { connection?: typeof mongoose; promise?: Promise<typeof mongoose> } = {};  
+async function connectDB() {  
+    if (!MONGODB_URI) {  
+        throw new Error('Please define the MONGODB_URI environment variable inside .env.local');  
+    }  
+    if (cached.connection) {  
+        return cached.connection;  
+    }  
+    if (!cached.promise) {  
+        const opts = {  
+            bufferCommands: false,  
+        };  
+        cached.promise = mongoose.connect(`${MONGODB_URI}/${DB_NAME}`, opts);  
+        console.log('MONGODB Connected')
+    }  
+    try {  
+        cached.connection = await cached.promise;  
+    } catch (e) {  
+        cached.promise = undefined;  
+        throw e;  
+    }  
+    return cached.connection;  
+}  
+export default connectDB;
 
-type connectionObject = {
-  isConnected?: number;
-};
 
-const connectionObj: connectionObject = {};
-
-export default async function connectDB(): Promise<void> {
-  if (connectionObj.isConnected) {
-    console.log("Already connected to database");
-    return;
-  }
-  try {
-    const { connection, connections } = await mongoose.connect(
-      `${MONGODB_URI}/${DB_NAME}`
-    );
-    connectionObj.isConnected = connections[0].readyState;
-    console.log(`MongoDB connected \n DB HOST : ${connection.host}`);
-  } catch (error) {
-    console.error("MongoDB Connection Error", error);
-    process.exit(1);
-  }
-}
+//`${MONGODB_URI}/${DB_NAME}`

@@ -6,26 +6,29 @@ import { uuidv4 } from "@/app/lib/utils";
 import { cookies } from "next/headers";
 
 const STRIPE_KEY = process.env.STRIPE_SECRET_KEY || "";
-const DOMAIN = "http://localhost:3000";
+const DOMAIN =
+  process.env.NODE_ENV === "production"
+    ? "https://shopstream.vercel.app"
+    : "http://localhost:3000";
 const stripe = new Stripe(STRIPE_KEY);
 
 interface payloadType {
   items: CartItemType[];
-  couponCode:  CouponCode | undefined;
+  couponCode: CouponCode | undefined;
 }
 
 const couponMap: { [key: string]: string } = {
-  'FLAT20': process.env.STRIPE_COUPON_FLAT20 || '',
-  'WELCOME25': process.env.STRIPE_COUPON_WELCOME25 || '',
-  'BIGSPEND50': process.env.STRIPE_COUPON_BIGSPEND50 || '',
+  FLAT20: process.env.STRIPE_COUPON_FLAT20 || "",
+  WELCOME25: process.env.STRIPE_COUPON_WELCOME25 || "",
+  BIGSPEND50: process.env.STRIPE_COUPON_BIGSPEND50 || "",
 };
 
 export async function POST(req: NextRequest) {
   const payload: payloadType = await req.json();
   const checkoutToken = uuidv4();
   console.log("CheckoutToken ", checkoutToken);
-  cookies().set('checkoutToken', checkoutToken);
-  const origin =  `${DOMAIN}/checkout`;
+  cookies().set("checkoutToken", checkoutToken);
+  const origin = `${DOMAIN}/checkout`;
   const { items, couponCode } = payload;
   try {
     const lineItems = items.map((item) => ({
@@ -40,7 +43,6 @@ export async function POST(req: NextRequest) {
       quantity: item.quantity,
     }));
 
-    
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       payment_method_types: ["card"],
       line_items: lineItems,
@@ -56,7 +58,7 @@ export async function POST(req: NextRequest) {
 
     const session = await stripe.checkout.sessions.create(sessionParams);
     if (session.url) {
-      return NextResponse.json({ url: session.url },{status : 200});
+      return NextResponse.json({ url: session.url }, { status: 200 });
     } else {
       throw new Error("Failed to create Stripe checkout session.");
     }

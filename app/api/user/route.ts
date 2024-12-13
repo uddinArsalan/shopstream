@@ -1,7 +1,7 @@
-import { findUserById } from "@/app/lib/db";
 import connectDB from "@/app/lib/db/connectDB";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { findUserById } from "@/app/actions/auth";
 
 export async function GET() {
   try {
