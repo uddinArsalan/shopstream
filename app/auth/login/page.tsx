@@ -2,19 +2,22 @@
 import { login } from "@/app/actions/auth";
 import { useFormStatus, useFormState } from "react-dom";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useApp } from "@/app/context/AppProvider";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [state, action] = useFormState(login, undefined);
+  const {startLoadingUser} = useApp()
   const { pending } = useFormStatus();
-  // const router = useRouter()
+  const router = useRouter();
 
-  // useEffect(() => {
-  //   if(!pending && state && !state.errors && !state.message){
-  //     router.push("/");
-  //   }
-  // },[pending,router,state])
+  useEffect(() => {
+    if(state && state.success){
+      startLoadingUser();
+      router.push("/")
+    }
+  },[state,startLoadingUser,router])
 
   return (
     <main className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4 sm:p-24">

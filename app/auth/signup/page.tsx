@@ -3,19 +3,22 @@ import { signup } from '@/app/actions/auth';
 import { useFormStatus, useFormState } from 'react-dom';
 import Link from "next/link";
 import { useEffect } from 'react';
+import { useApp } from '@/app/context/AppProvider';
 import { useRouter } from 'next/navigation';
  
 export default function SignupForm() {
   const [state, action] = useFormState(signup, undefined)
   const { pending } = useFormStatus();
+  const {startLoadingUser} = useApp();
 
-  // const router = useRouter();
+  const router = useRouter();
 
-  // useEffect(() => {
-  //   if (!pending && state && !state.errors && !state.message) {
-  //     router.push("/");
-  //   }
-  // }, [pending, state, router])
+  useEffect(() => {
+    if(state && state.success){
+      startLoadingUser();
+      router.push("/")
+    }
+  },[state,startLoadingUser,router])
 
   return (
     <main className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4 sm:p-24">

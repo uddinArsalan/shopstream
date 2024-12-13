@@ -6,7 +6,7 @@ import {
 } from "@/app/lib/utils/definitions";
 import { cookies } from "next/headers";
 import connectDB from "@/app/lib/db/connectDB";
-import { redirect ,permanentRedirect} from "next/navigation";
+import { redirect } from "next/navigation";
 import { User } from "@/app/models/User";
 import { Types } from "mongoose";
 
@@ -69,11 +69,12 @@ export async function signup(state: FormState, formData: FormData) {
     const user = await createUser(name, email, password);
     const accessToken = await generateUserTokens(user._id);
     setTokenCookies(accessToken);
+    return { success : true}
   } catch (error) {
     console.error("Signup error:", error);
     return { message: "An error occurred during signup" };
   }
-  permanentRedirect("/");
+  // permanentRedirect("/",RedirectType.replace);
 }
 
 export async function login(state: FormState, formData: FormData) {
@@ -98,12 +99,12 @@ export async function login(state: FormState, formData: FormData) {
       return { message: "User Already Login" };
     const accessToken = await generateUserTokens(user._id);
     setTokenCookies(accessToken);
-    // return { user }
+    return { success : true }
   } catch (error) {
     console.error("Login error:", error);
     return { message: "An error occurred during login" };
   }
-  permanentRedirect("/");
+  // permanentRedirect("/",RedirectType.replace);
 }
 
 export async function logout() {

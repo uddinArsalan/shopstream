@@ -3,7 +3,6 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { uuidv4 } from "../lib/utils";
 import Loading from "../loading";
 import { logout } from "../actions/auth";
-import { useRouter, usePathname } from "next/navigation";
 
 interface AppInterface {
   startLoader: () => string;
@@ -11,6 +10,7 @@ interface AppInterface {
   isLoggedIn: boolean;
   userProfile: User | null;
   logoutUser: () => void;
+  startLoadingUser : () => void;
 }
 
 const AppContext = createContext<AppInterface>({
@@ -19,6 +19,7 @@ const AppContext = createContext<AppInterface>({
   isLoggedIn: false,
   userProfile: null,
   logoutUser: () => {},
+  startLoadingUser : () => {}
 });
 
 interface User {
@@ -34,9 +35,8 @@ export function useApp() {
 function AppProvider({ children }: { children: React.ReactNode }) {
   const [loadingProcesses, setLoadingProcesses] = useState<string[]>([]);
   const [userProfile, setUserProfile] = useState<User | null>(null);
+  const [isUserLoaded,setIsUserLoaded] = useState<boolean>(false);
   const isLoggedIn = userProfile !== null;
-  const router = useRouter();
-  const path = usePathname();
 
   function startNewLoadingProcess() {
     const loadingProcessId = uuidv4();
@@ -48,6 +48,11 @@ function AppProvider({ children }: { children: React.ReactNode }) {
     setLoadingProcesses((existing) => {
       return existing.filter((x) => x !== processId);
     });
+  }
+
+  function startLoadingUser(){
+    setUserProfile(null);
+    setIsUserLoaded(true)
   }
 
   useEffect(() => {
@@ -71,7 +76,7 @@ function AppProvider({ children }: { children: React.ReactNode }) {
     }
   
     getUser();
-  }, [userProfile]);
+  }, [userProfile,isUserLoaded]);
 
    async function logoutUser() {
     setUserProfile(null);
@@ -86,6 +91,7 @@ function AppProvider({ children }: { children: React.ReactNode }) {
         isLoggedIn,
         userProfile,
         logoutUser,
+        startLoadingUser
       }}
     >
       {children}
